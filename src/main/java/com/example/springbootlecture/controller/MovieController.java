@@ -1,41 +1,42 @@
 package com.example.springbootlecture.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.example.springbootlecture.dto.MovieDto;
+import com.example.springbootlecture.dto.ResponseDto;
+import com.example.springbootlecture.service.MovieService;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @Tag(name="MovieController입니다")
 @RequestMapping("/api")
 @RestController
+@RequiredArgsConstructor
 public class MovieController {
-    @Deprecated(since = "2021-07-01", forRemoval = true)
-    @GetMapping("/v1/movies")
-    public List<String> get(){
-        return List.of("test");
-    }
-    @GetMapping("/v2/movies")
-    public List<String> gets(){
-        return List.of("test");
-    }
-
-    @GetMapping("/v1/movies/{movieId}")
-    public String get(
-            @RequestParam(value = "v", required = false) Integer v,
-            @PathVariable("movieId") Long movieId
-    ){
-
-        return String.valueOf(movieId + " " + v);
-    }
+    private final ObjectMapper objectMapper;
+    private final MovieService movieService;
     @PostMapping("/v1/movies")
-    public void create(){
-    }
+    public ResponseEntity<ResponseDto> createMovie(@RequestBody MovieDto.MovieCreateRequestDto movieCreateRequestDto){
 
-    @PutMapping("/v1/put")
-    public void put(){
-    }
+        MovieDto.MovieCreateResponseDto movieCreateResponseDto;
+        try {
+            movieCreateResponseDto = movieService.createMovie(movieCreateRequestDto);
 
-    @DeleteMapping("/api/v1/del")
-    public void del(){
+            ResponseDto responseDto = ResponseDto.builder().payload(
+                    objectMapper.convertValue(movieCreateResponseDto, Map.class)).build();
+
+            return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
+
+        }catch(Exception e){
+            String errorMessage = String.valueOf(e.getMessage());
+            ResponseDto responseDto = ResponseDto.builder().error(Map.of("error", errorMessage)).build();
+
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseDto);
+        }
     }
 }
