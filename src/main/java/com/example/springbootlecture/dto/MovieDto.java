@@ -20,4 +20,24 @@ public class MovieDto {
         private Timestamp createdAt;
     }
 
+    @Getter
+    public static class MovieUpdateRequestDto {
+        private String name;
+        private int productionYear;
+    }
+
+    @Getter
+    @Builder
+    public static class MovieUpdateResponseDto {
+        private String name;
+        private int productionYear;
+        private Timestamp updatedAt;
+    }
+
+    @Getter
+    @Builder
+    public static class MovieResponseDto{
+        private String name;
+        private int productionYear;
+    }
 }

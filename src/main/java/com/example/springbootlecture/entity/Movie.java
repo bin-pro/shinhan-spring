@@ -13,6 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Getter
 public class Movie {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) private Long id;

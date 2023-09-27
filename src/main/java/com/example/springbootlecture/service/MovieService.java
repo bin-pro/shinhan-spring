@@ -61,4 +61,39 @@ public class MovieService {
                 .createdAt(Timestamp.valueOf(LocalDateTime.now()))
                 .build();
     }
+
+    @Transactional
+    public MovieDto.MovieUpdateResponseDto updateMovie(Long id, MovieDto.MovieUpdateRequestDto movieUpdateRequestDto){
+        Movie movie = movieRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 영화가 없습니다. id=" + id));
+
+        movie = movie.builder()
+                .name(movieUpdateRequestDto.getName())
+                .productionYear(movieUpdateRequestDto.getProductionYear())
+                .build();
+
+        movieRepository.save(movie);
+
+        Log log = Log.builder()
+                .message("영화가 수정되었습니다.")
+                .createdAt(Timestamp.valueOf(LocalDateTime.now()))
+                .build();
+
+        logRepository.save(log);
+
+        return MovieDto.MovieUpdateResponseDto.builder()
+                .name(movieUpdateRequestDto.getName())
+                .productionYear(movieUpdateRequestDto.getProductionYear())
+                .updatedAt(Timestamp.valueOf(LocalDateTime.now()))
+                .build();
+    }
+
+    @Transactional
+    public MovieDto.MovieResponseDto getMovie(Long id){
+        Movie movie = movieRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 영화가 없습니다. id=" + id));
+       // Movie movie = movieRepository.findById(id).orElseThrow();
+        return MovieDto.MovieResponseDto.builder()
+                .name(movie.getName())
+                .productionYear(movie.getProductionYear())
+                .build();
+    }
 }

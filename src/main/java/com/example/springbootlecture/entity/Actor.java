@@ -1,11 +1,15 @@
 package com.example.springbootlecture.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 
 @Entity
 @Table(name = "actor")
-@Getter
+@Getter @Builder @NoArgsConstructor @AllArgsConstructor
 public class Actor {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) private Long id;
